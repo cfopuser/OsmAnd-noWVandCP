@@ -113,7 +113,10 @@ jobs:
           echo "=== Collected Release Artifacts ==="
           ls -lah .
           cd ..
-          TAG_NAME="kiosk-$(date +'%Y.%m.%d-%H%M')-$(git log -n 1 --format='%h')"
+          TAG_NAME="v$(grep 'versionName "' OsmAnd/build.gradle | head -n 1 | sed -E 's/.*versionName "([^"]+)".*/\1/')"
+          if [ -z "$TAG_NAME" ] || [ "$TAG_NAME" = "v" ]; then
+            TAG_NAME="v5.4.0"
+          fi
           echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
 
       - name: Upload APK Artifacts
@@ -136,7 +139,7 @@ jobs:
             ## OsmAnd Kiosk & SSL Packet Inspection Edition
             **Edited by cfopuser**
 
-            Automated CI/CD release build.
+            Automated release build for official OsmAnd `${{ steps.collect_apks.outputs.tag_name }}`.
             - **Commit**: `${{ github.sha }}`
             - **Branch**: `${{ github.ref_name }}`
 
@@ -152,5 +155,6 @@ jobs:
             android/release_apks/SHA256SUMS.txt
           draft: false
           prerelease: false
+          make_latest: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
