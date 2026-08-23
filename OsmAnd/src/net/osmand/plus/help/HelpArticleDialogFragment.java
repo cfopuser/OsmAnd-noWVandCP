@@ -79,7 +79,8 @@ public class HelpArticleDialogFragment extends BaseFullScreenDialogFragment {
 			if (file.exists()) {
 				webView.loadUrl("file://" + file.getAbsolutePath());
 			} else {
-				webView.loadUrl(articleUrl);
+				String html = "<html><head><meta name='viewport' content='width=device-width, initial-scale=1.0'></head><body style='padding:20px;font-family:sans-serif;color:#333;'><h3>" + (title != null ? title : "") + "</h3><p>" + getString(R.string.web_access_disabled) + "</p></body></html>";
+				webView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);
 			}
 		}
 	}

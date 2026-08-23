@@ -7,6 +7,7 @@ import static net.osmand.shared.settings.enums.MetricsConstants.MILES_AND_FEET;
 import static net.osmand.shared.settings.enums.MetricsConstants.MILES_AND_METERS;
 import static btools.routingapp.BRouterServiceConnection.BROUTER_CONNECT_TIMEOUT_MS;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
@@ -14,10 +15,12 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.Toast;
 
@@ -262,6 +265,36 @@ public class OsmandApplication extends MultiDexApplication {
 			}
 		};
 		ProcessLifecycleOwner.get().getLifecycle().addObserver(appLifecycleObserver);
+		registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
+			@Override
+			public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
+			}
+
+			@Override
+			public void onActivityStarted(@NonNull Activity activity) {
+			}
+
+			@Override
+			public void onActivityResumed(@NonNull Activity activity) {
+				enforceKioskRestrictions(activity.getWindow().getDecorView());
+			}
+
+			@Override
+			public void onActivityPaused(@NonNull Activity activity) {
+			}
+
+			@Override
+			public void onActivityStopped(@NonNull Activity activity) {
+			}
+
+			@Override
+			public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle outState) {
+			}
+
+			@Override
+			public void onActivityDestroyed(@NonNull Activity activity) {
+			}
+		});
 
 		createInUiThread();
 		uiHandler = new Handler();
@@ -1253,5 +1286,23 @@ public class OsmandApplication extends MultiDexApplication {
 
 	public void reInitPoiTypes() {
 		appInitializer.reInitPoiTypes();
+	}
+
+	public static void enforceKioskRestrictions(@Nullable View rootView) {
+		if (rootView == null) {
+			return;
+		}
+		if (rootView instanceof android.webkit.WebView) {
+			android.webkit.WebView webView = (android.webkit.WebView) rootView;
+			android.webkit.WebSettings settings = webView.getSettings();
+			settings.setBlockNetworkLoads(true);
+			settings.setGeolocationEnabled(false);
+			settings.setSupportMultipleWindows(false);
+		} else if (rootView instanceof ViewGroup) {
+			ViewGroup group = (ViewGroup) rootView;
+			for (int i = 0; i < group.getChildCount(); i++) {
+				enforceKioskRestrictions(group.getChildAt(i));
+			}
+		}
 	}
 }

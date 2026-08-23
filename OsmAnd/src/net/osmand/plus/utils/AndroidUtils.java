@@ -294,9 +294,27 @@ public class AndroidUtils {
 		return startActivityIfSafe(context, intent, null);
 	}
 
+	public static boolean isWebIntent(@Nullable Intent intent) {
+		if (intent == null) {
+			return false;
+		}
+		if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+			Uri data = intent.getData();
+			if (data != null) {
+				String scheme = data.getScheme();
+				return scheme != null && (scheme.equalsIgnoreCase("http") || scheme.equalsIgnoreCase("https"));
+			}
+		}
+		return false;
+	}
+
 	public static boolean startActivityIfSafe(@NonNull Context context, @NonNull Intent intent, @Nullable Intent chooserIntent) {
 		try {
 			Intent selectedIntent = chooserIntent != null ? chooserIntent : intent;
+			if (isWebIntent(selectedIntent)) {
+				getApp(context).showToastMessage(R.string.web_access_disabled);
+				return false;
+			}
 			if (!(context instanceof Activity)) {
 				selectedIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			}
@@ -1371,6 +1389,11 @@ public class AndroidUtils {
 	}
 
 	public static void openUrl(@NonNull Context context, @NonNull Uri uri, boolean nightMode) {
+		String scheme = uri.getScheme();
+		if (scheme != null && (scheme.equalsIgnoreCase("http") || scheme.equalsIgnoreCase("https"))) {
+			getApp(context).showToastMessage(R.string.web_access_disabled);
+			return;
+		}
 		CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder()
 				.setToolbarColor(ColorUtilities.getAppBarColor(context, nightMode))
 				.build();

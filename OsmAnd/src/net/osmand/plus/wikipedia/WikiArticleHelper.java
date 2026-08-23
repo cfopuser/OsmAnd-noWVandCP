@@ -109,14 +109,8 @@ public class WikiArticleHelper {
 		if (context == null) {
 			return;
 		}
-		new AlertDialog.Builder(context)
-				.setTitle(url)
-				.setMessage(R.string.online_webpage_warning)
-				.setPositiveButton(R.string.shared_string_ok, (dialog, which) -> {
-					AndroidUtils.openUrl(context, url, nightMode);
-				})
-				.setNegativeButton(R.string.shared_string_cancel, null)
-				.show();
+		OsmandApplication app = (OsmandApplication) context.getApplicationContext();
+		app.showToastMessage(R.string.web_access_disabled);
 	}
 
 	@Nullable

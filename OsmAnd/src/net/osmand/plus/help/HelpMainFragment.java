@@ -284,31 +284,10 @@ public class HelpMainFragment extends BaseFullScreenFragment implements OnItemCl
 					});
 					return false;
 				}));
-
-		items.add(createMenuItem(app.getString(R.string.github_discussion), app.getString(R.string.open_issue_on_github_descr),
-				R.drawable.ic_action_social_github, getUrlItemClickListener(app.getString(R.string.discussion_github))));
-
-		items.add(createMenuItem(app.getString(R.string.telegram_chats), null,
-				R.drawable.ic_action_social_telegram, (uiAdapter, view, item, isChecked) -> {
-					callActivity(activity -> {
-						FragmentManager manager = activity.getSupportFragmentManager();
-						Map<String, String> telegramChats = articlesHelper.getTelegramChats();
-						TelegramChatsFragment.showInstance(manager, telegramChats);
-					});
-					return false;
-				}));
-
-		for (SocialNetwork network : SocialNetwork.values()) {
-			String url = app.getString(network.urlId);
-			items.add(createMenuItem(app.getString(network.titleId), url, network.iconId, getUrlItemClickListener(url)));
-		}
 	}
 
 	private void createReportIssuesCategory(@NonNull List<ContextMenuItem> items) {
 		items.add(createCategory(app.getString(R.string.report_an_issues)));
-
-		items.add(createMenuItem(app.getString(R.string.open_issue_on_github), app.getString(R.string.open_issue_on_github_descr),
-				R.drawable.ic_action_social_github, getUrlItemClickListener(app.getString(R.string.issues_github))));
 
 		if (app.getFeedbackHelper().hasCrashLogs()) {
 			items.add(createMenuItem(app.getString(R.string.send_crash_log), app.getString(R.string.send_crash_log_descr),
