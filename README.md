@@ -1,90 +1,62 @@
-# OsmAnd+ Kiosk & SSL Packet Inspection Edition
+# OsmAnd+ (Kiosk & Filtered Networks Edition)
 
 [![Upstream Sync & Automated Build](https://github.com/cfopuser/OsmAnd-noWVandCP/actions/workflows/upstream-sync-and-build.yml/badge.svg)](https://github.com/cfopuser/OsmAnd-noWVandCP/actions/workflows/upstream-sync-and-build.yml)
 [![Latest Release](https://img.shields.io/github/v/release/cfopuser/OsmAnd-noWVandCP?include_prereleases&label=Latest%20Release)](https://github.com/cfopuser/OsmAnd-noWVandCP/releases/latest)
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
+[![App Store Catalog](https://img.shields.io/badge/App_Store-OsmAnd-rose.svg)](https://cfopuser.github.io/app-store/#app/osmand)
 
-> **Maintained & Edited by [cfopuser](https://github.com/cfopuser)**  
-> A dedicated hardened fork of **OsmAnd+** tailored for **Kiosk environments**, **device lockdown**, and **enterprise/filtered ISP networks**.
+A fork of OsmAnd+ configured for kiosk deployments, content-filtered networks (NetFree, enterprise inspection proxies), and locked-down devices. Automatically tracked, built, and published from upstream releases.
 
----
-
-## 🎯 Fork Highlights & Key Features
-
-### 1. 🔒 Kiosk Mode & Strict Web Lockdown
-- **No In-App Web Browsing**: Embedded WebViews across settings, help articles, Wikipedia cards, and menus are locked down with network loads blocked (`setBlockNetworkLoads(true)`).
-- **Zero Browser Breakout**: External URL intents (`http://`, `https://`) and CustomTabs launches (`openUrl`, `ACTION_VIEW`) are strictly intercepted and suppressed, displaying a toast (`Web browsing is disabled`).
-- **Dynamic Runtime Enforcement**: `ActivityLifecycleCallbacks` recursively scan and sanitize inflated view hierarchies on any current or future screens at runtime.
-
-### 2. 🛡️ SSL Packet Inspection & User CA Trust
-- **Zero Certificate Pinning**: All hardcoded certificate pinning has been removed, ensuring network requests work seamlessly behind TLS-intercepting firewalls and content-filtering ISPs.
-- **Android Network Security Config**: Declared OS-level `<trust-anchors>` with both `<certificates src="system" />` and `<certificates src="user" />` across all base and debug connections.
-
-### 3. 🗺️ Full Native Navigation & 3D Offline Maps
-- All core OsmAnd capabilities remain 100% functional without internet or Google Play dependencies:
-  - 3D OpenGL vector map rendering (`OsmAndCore`).
-  - Turn-by-turn offline voice routing.
-  - Offline POI, address, and coordinate search.
-  - Direct offline map downloads.
-
-### 4. ⚡ Fully Automated CI/CD & Upstream Synchronization
-- **Continuous Upstream Sync**: Automated GitHub Actions workflow checks out upstream `osmandapp/OsmAnd` and its sibling modules weekly.
-- **Automated GitHub Releases**: Builds the universal APKs, computes `SHA256SUMS.txt`, and publishes releases directly to the **[Releases tab](https://github.com/cfopuser/OsmAnd-noWVandCP/releases)** under official version tags (e.g. `v5.4.0`).
-- **Invariant Gate Tests**: Automated verification scripts (`scripts/verify_kiosk_invariants.sh` / `.ps1`) ensure no unguarded WebViews or pinning rules slip through during upstream rebases.
+- Web Catalog: [cfopuser.github.io/app-store/#app/osmand](https://cfopuser.github.io/app-store/#app/osmand)
+- Releases: [github.com/cfopuser/OsmAnd-noWVandCP/releases](https://github.com/cfopuser/OsmAnd-noWVandCP/releases)
 
 ---
 
-## 📥 Download & Installation
+## Modifications
 
-### Latest Releases
-Download the pre-built APK from the **[GitHub Releases](https://github.com/cfopuser/OsmAnd-noWVandCP/releases/latest)** page.
+### Kiosk Mode and In-App Web Lockdown
+- Embedded WebViews in settings, help, and articles have remote network loads disabled.
+- External browser and CustomTab intents (`http://`, `https://`) are intercepted to prevent browser breakout.
+- Dynamic lifecycle hooks sanitize WebViews inflated across screens at runtime.
 
-#### Using GitHub CLI (`gh`):
+### SSL Inspection & Custom CA Trust
+- Zero certificate pinning: requests function normally behind content-filtering ISPs and TLS-decrypting proxies.
+- Android Network Security Config enables trust for both system and user-installed CA certificates.
+
+### Full Offline Functionality Preserved
+- 3D OpenGL vector map rendering, offline navigation, voice routing, search, and map downloads work without Google Play dependencies.
+
+### Automated CI/CD
+- Weekly upstream synchronization with `osmandapp/OsmAnd`.
+- Automatic build and publishing to GitHub Releases under matching upstream version tags.
+
+---
+
+## Downloads
+
+Pre-built APKs and checksums are available on the [Releases](https://github.com/cfopuser/OsmAnd-noWVandCP/releases/latest) page and the [App Store Catalog](https://cfopuser.github.io/app-store/#app/osmand).
+
 ```bash
+# Download via GitHub CLI
 gh release download --repo cfopuser/OsmAnd-noWVandCP --pattern "*.apk"
-```
 
-#### Direct Download via `wget`:
-```bash
-wget https://github.com/cfopuser/OsmAnd-noWVandCP/releases/latest/download/OsmAnd-androidFull-legacy-fat-debug.apk
-```
-
-#### Verify Integrity:
-```bash
+# Verify SHA256 integrity
 sha256sum -c SHA256SUMS.txt
 ```
 
 ---
 
-## 🛠️ Verification & Invariants Testing
+## Verification
 
-To verify kiosk lockdown and security invariants locally:
+Run invariant checks to verify kiosk lockdown and security settings:
 
-**Linux / macOS (Bash):**
-```bash
-chmod +x scripts/verify_kiosk_invariants.sh
-./scripts/verify_kiosk_invariants.sh
-```
-
-**Windows (PowerShell):**
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts/verify_kiosk_invariants.ps1
-```
+- Linux / macOS: `./scripts/verify_kiosk_invariants.sh`
+- Windows: `powershell -ExecutionPolicy Bypass -File scripts/verify_kiosk_invariants.ps1`
 
 ---
 
-## 📄 License & Attribution
+## License & Attribution
 
-- **Original Project**: OsmAnd is Copyright © 2010–2026 OsmAnd BV (Amstelveen, Netherlands) and is licensed under the **GNU General Public License v3 (GPLv3)**.
-- **Kiosk & SSL Inspection Modifications**: Copyright © 2026 **cfopuser**. Modifications are licensed under the **GNU General Public License v3 (GPLv3)** in compliance with GPLv3 Section 5 (Conveying Modified Source Versions).
-- For complete details, refer to [`LICENSE`](./LICENSE) and [`AUTHORS.md`](./AUTHORS.md).
-
----
-
-## 🌍 General OsmAnd Capabilities
-
-OsmAnd (OSM Automated Navigation Directions) is a map and navigation application with access to the free, worldwide, and high-quality OpenStreetMap (OSM) database.
-
-- **Offline Vector Maps**: Turn-by-turn optical and voice navigation without roaming charges.
-- **Routing**: Specialized vehicle, bicycle, pedestrian, and public transport modes.
-- **OpenStreetMap Data**: High-quality crowd-sourced global map layers, contour lines, hillshades, and offline POI database.
+- Original OsmAnd: Copyright (c) 2010-2026 OsmAnd BV under GNU General Public License v3 (GPLv3).
+- Fork Modifications: Copyright (c) 2026 cfopuser under GNU General Public License v3 (GPLv3).
+- Refer to [LICENSE](LICENSE) and [AUTHORS.md](AUTHORS.md) for details.
