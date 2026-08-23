@@ -12,6 +12,7 @@
 	Thx - Hardy
 -->
 	<string name="web_access_disabled">Web browsing is disabled</string>
+	<string name="edited_by_cfopuser">Edited by cfopuser</string>
 	<string name="share_favorites_media_preparation_failed">Couldn\'t include attached media. Sharing points only.</string>
 	<plurals name="files_count">
 		<item quantity="one">%d file</item>

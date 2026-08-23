@@ -126,13 +126,16 @@ jobs:
           retention-days: 30
 
       - name: Publish GitHub Release
-        if: ${{ inputs.publish_release != false }}
+        if: ${{ (inputs.publish_release != false) && (steps.collect_apks.outcome == 'success') }}
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.collect_apks.outputs.tag_name }}
+          target_commitish: ${{ github.sha }}
           name: OsmAnd Kiosk Edition ${{ steps.collect_apks.outputs.tag_name }}
           body: |
             ## OsmAnd Kiosk & SSL Packet Inspection Edition
+            **Edited by cfopuser**
+
             Automated CI/CD release build.
             - **Commit**: `${{ github.sha }}`
             - **Branch**: `${{ github.ref_name }}`

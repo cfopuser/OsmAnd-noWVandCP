@@ -79,7 +79,18 @@ public class HelpArticleDialogFragment extends BaseFullScreenDialogFragment {
 			if (file.exists()) {
 				webView.loadUrl("file://" + file.getAbsolutePath());
 			} else {
-				String html = "<html><head><meta name='viewport' content='width=device-width, initial-scale=1.0'></head><body style='padding:20px;font-family:sans-serif;color:#333;'><h3>" + (title != null ? title : "") + "</h3><p>" + getString(R.string.web_access_disabled) + "</p></body></html>";
+				String appVersion = Version.getFullVersionWithReleaseDate(app);
+				String editor = getString(R.string.edited_by_cfopuser);
+				String html = "<html><head><meta name='viewport' content='width=device-width, initial-scale=1.0'></head>" +
+						"<body style='padding:20px;font-family:sans-serif;color:#333;'>" +
+						"<h2>" + (title != null ? title : "OsmAnd") + "</h2>" +
+						"<p style='font-size:1.1em;font-weight:bold;color:#1976D2;'>" + editor + "</p>" +
+						"<p style='color:#666;'>Version: " + appVersion + "</p>" +
+						"<hr style='border:0;border-top:1px solid #ddd;margin:16px 0;'/>" +
+						"<p>• Kiosk Mode: Web access and external webviews disabled.</p>" +
+						"<p>• Network Security: Custom CA and SSL packet inspection trusted.</p>" +
+						"<p>• 3D OpenGL & Offline Maps: Fully enabled.</p>" +
+						"</body></html>";
 				webView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);
 			}
 		}

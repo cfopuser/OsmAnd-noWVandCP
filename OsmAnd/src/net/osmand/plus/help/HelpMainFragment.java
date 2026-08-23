@@ -307,16 +307,17 @@ public class HelpMainFragment extends BaseFullScreenFragment implements OnItemCl
 		items.add(createCategory(app.getString(R.string.about_osmand)));
 		boolean nightMode = app.getDaynightHelper().isNightMode(ThemeUsageContext.APP);
 
-		items.add(createMenuItem(app.getString(R.string.about_osmand), null, R.drawable.ic_action_osmand_logo,
+		items.add(createMenuItem(app.getString(R.string.about_osmand), app.getString(R.string.edited_by_cfopuser), R.drawable.ic_action_osmand_logo,
 				getArticleItemClickListener(app.getString(R.string.about_osmand), app.getString(R.string.osmand_about)))
 				.setUseNaturalIconColor(true)
 				.setColor(ColorUtilities.getOsmandIconColor(app, nightMode)));
 
 		String version = Version.getFullVersionWithReleaseDate(app);
-		items.add(createMenuItem(app.getString(R.string.what_is_new), version, R.drawable.ic_action_clipboard_notes,
+		String versionWithEditor = version + " • " + app.getString(R.string.edited_by_cfopuser);
+		items.add(createMenuItem(app.getString(R.string.what_is_new), versionWithEditor, R.drawable.ic_action_clipboard_notes,
 				getArticleItemClickListener(app.getString(R.string.what_is_new), app.getString(R.string.docs_latest_version)))
 				.setLongClickListener((adapter, itemId, position, isChecked, viewCoordinates) -> {
-					ShareMenu.copyToClipboardWithToast(adapter.getContext(), version, false);
+					ShareMenu.copyToClipboardWithToast(adapter.getContext(), versionWithEditor, false);
 					return false;
 				}));
 
