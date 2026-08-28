@@ -14,10 +14,10 @@ on:
         type: boolean
         default: true
       flavor:
-        description: 'Gradle build task (e.g. assembleAndroidFullLegacyFatDebug, assembleAndroidFullOpenglArm64Release)'
+        description: 'Gradle build task (e.g. assembleAndroidFullOpenglFatRelease, assembleAndroidFullOpenglArm64Release)'
         required: true
         type: string
-        default: 'assembleAndroidFullLegacyFatDebug'
+        default: 'assembleAndroidFullOpenglFatRelease'
 
 permissions:
   contents: write
@@ -97,7 +97,7 @@ jobs:
       - name: Build APK with Gradle
         working-directory: ./android
         run: |
-          BUILD_TASK="${{ inputs.flavor || 'assembleAndroidFullLegacyFatDebug' }}"
+          BUILD_TASK="${{ inputs.flavor || 'assembleAndroidFullOpenglFatRelease' }}"
           echo "Running build task: $BUILD_TASK"
           ./gradlew $BUILD_TASK
 

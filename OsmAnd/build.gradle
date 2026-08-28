@@ -32,10 +32,18 @@ android {
 		}
 
 		publishing {
-			storeFile file("/var/lib/jenkins/osmand_key")
-			storePassword System.getenv("OSMAND_APK_PASSWORD")
-			keyAlias "osmand"
-			keyPassword System.getenv("OSMAND_APK_PASSWORD")
+			def customKeyStore = System.getenv("OSMAND_KEYSTORE_PATH") ? file(System.getenv("OSMAND_KEYSTORE_PATH")) : file("/var/lib/jenkins/osmand_key")
+			if (customKeyStore.exists()) {
+				storeFile customKeyStore
+				storePassword System.getenv("OSMAND_APK_PASSWORD")
+				keyAlias System.getenv("OSMAND_KEY_ALIAS") ?: "osmand"
+				keyPassword System.getenv("OSMAND_APK_PASSWORD")
+			} else {
+				storeFile file("../keystores/debug.keystore")
+				storePassword "android"
+				keyAlias "androiddebugkey"
+				keyPassword "android"
+			}
 		}
 	}
 
