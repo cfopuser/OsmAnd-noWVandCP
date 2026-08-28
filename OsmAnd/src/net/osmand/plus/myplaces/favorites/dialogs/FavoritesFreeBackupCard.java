@@ -43,10 +43,6 @@ public class FavoritesFreeBackupCard extends BaseCard {
 	}
 
 	public static boolean shouldShow(@NonNull OsmandApplication app, @NonNull List<FavoriteGroup> favoriteGroups) {
-		boolean hasFavorites = !Algorithms.isEmpty(favoriteGroups);
-		boolean backupAvailable = InAppPurchaseUtils.isBackupAvailable(app);
-		boolean registered = app.getBackupHelper().isRegistered();
-		boolean dismissed = app.getSettings().FAVORITES_FREE_ACCOUNT_CARD_DISMISSED.get();
-		return hasFavorites && !backupAvailable && !registered && !dismissed;
+		return false;
 	}
 }

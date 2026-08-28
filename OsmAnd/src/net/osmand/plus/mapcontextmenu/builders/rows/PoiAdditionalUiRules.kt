@@ -71,15 +71,6 @@ object PoiAdditionalUiRules {
             checkKeyOnContains = true
         ),
         PoiAdditionalUiRule(
-            key = Amenity.WIKIPEDIA,
-            customIconId = R.drawable.ic_plugin_wikipedia,
-            customTextPrefixId = R.string.shared_string_wikipedia,
-            isWikipedia = true,
-            checkBaseKey = false,
-            checkKeyOnContains = true,
-            behavior = WikipediaRowBehavior
-        ),
-        PoiAdditionalUiRule(
             key = "addr:housename",
             checkBaseKey = false,
             customIconId = R.drawable.ic_action_poi_name
@@ -109,10 +100,6 @@ object PoiAdditionalUiRules {
         PoiAdditionalUiRule(
             key = "internet_access_fee_yes",
             customIconId = R.drawable.ic_action_internet_access_fee
-        ),
-        PoiAdditionalUiRule(
-            key = "instagram",
-            customIconId = R.drawable.ic_action_social_instagram
         ),
         PoiAdditionalUiRule(
             key = Amenity.HEIGHT,

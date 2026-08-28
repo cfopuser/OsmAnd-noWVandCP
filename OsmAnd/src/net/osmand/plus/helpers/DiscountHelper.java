@@ -100,67 +100,7 @@ public class DiscountHelper {
 	private static final String FEATURE_NAUTICAL = "nautical";
 
 	public static void checkAndDisplay(MapActivity mapActivity) {
-		OsmandApplication app = mapActivity.getApp();
-		OsmandSettings settings = app.getSettings();
-		boolean forceShowDiscountBottomSheet = settings.SHOULD_SHOW_DISCOUNT_BOTTOM_SHEET.get();
-		if (!settings.INAPPS_READ.get() && !(Version.isDeveloperVersion(app) && forceShowDiscountBottomSheet)) {
-			return;
-		}
-		if (mBannerVisible) {
-			showDiscountBanner(mapActivity, mData);
-		} else if (mFilterVisible) {
-			showPoiFilter(mapActivity, mFilter);
-		}
-		if (System.currentTimeMillis() - mLastCheckTime < 1000 * 60 * 60 * 24
-				|| !settings.isInternetConnectionAvailable()) {
-			return;
-		}
-		mLastCheckTime = System.currentTimeMillis();
-		Map<String, String> pms = new LinkedHashMap<>();
-		pms.put("version", Version.getFullVersion(app));
-		pms.put("nd", String.valueOf(app.getAppInitializer().getFirstInstalledDays()));
-		pms.put("ns", String.valueOf(app.getAppInitializer().getNumberOfStarts()));
-		pms.put("lang", app.getLanguage() + "");
-		List<String> features = getFeatures(app);
-		if (!features.isEmpty()) {
-			pms.put("features", TextUtils.join(",", features));
-		}
-		try {
-			if (app.isUserAndroidIdAllowed()) {
-				pms.put("aid", app.getUserAndroidId());
-			}
-		} catch (Exception ignore) {
-		}
-		OsmAndTaskManager.executeTask(new AsyncTask<Void, Void, String>() {
-
-			@Override
-			protected String doInBackground(Void... params) {
-				try {
-					return AndroidNetworkUtils.sendRequest(mapActivity.getApp(),
-							URL, pms, "Requesting discount info...", false, false);
-				} catch (Exception e) {
-					logError("Requesting discount info error: ", e);
-					return null;
-				}
-			}
-
-			@Override
-			protected void onPostExecute(String response) {
-				try {
-					JSONObject obj = null;
-					if (settings.SHOULD_SHOW_DISCOUNT_BOTTOM_SHEET.get()) {
-						obj = new JSONObject(app.getString(R.string.test_discount_response));
-					} else if (!Algorithms.isEmpty(response)) {
-						obj = new JSONObject(response);
-					}
-					if (obj != null && obj.length() > 0) {
-						processDiscountResponse(obj, mapActivity);
-					}
-				} catch (JSONException e) {
-					logError("JSON parsing error: ", e);
-				}
-			}
-		});
+		// Promotional/discount sheets and polling disabled in kiosk / kosher edition
 	}
 
 	@SuppressLint("SimpleDateFormat")
@@ -393,11 +333,11 @@ public class DiscountHelper {
 	}
 
 	public static boolean hasCurrentSale() {
-		return mData != null && !Algorithms.isEmpty(mData.message);
+		return false;
 	}
 
 	public static boolean shouldShowCurrentSaleInDrawer(@NonNull OsmandApplication app) {
-		return hasCurrentSale() && !Version.isPaidVersion(app);
+		return false;
 	}
 
 	@DrawableRes

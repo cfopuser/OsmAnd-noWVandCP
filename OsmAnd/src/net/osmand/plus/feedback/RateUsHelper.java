@@ -54,32 +54,6 @@ public class RateUsHelper {
 	}
 
 	public static boolean shouldShowRateDialog(OsmandApplication app) {
-		long firstInstalledDays = app.getAppInitializer().getFirstInstalledDays();
-		//Do not show dialog if not google play version or more than 350 days left from the first start
-		if (!Version.isGooglePlayEnabled() || firstInstalledDays > 350
-				|| !app.getAppCustomization().isFeatureEnabled(FRAGMENT_RATE_US_ID)) {
-			return false;
-		}
-		OsmandSettings settings = app.getSettings();
-		int numberOfStarts = app.getAppInitializer().getNumberOfStarts();
-		RateUsState state = settings.RATE_US_STATE.get();
-		switch (state) {
-			//Do not show anymore if liked
-			case LIKED:
-			case DISLIKED_OR_IGNORED_AGAIN:
-				return false;
-			//First dialog after 15 days from the first start or 100 starts
-			case INITIAL_STATE:
-				return firstInstalledDays > 15 || numberOfStarts > 100;
-			//Second dialog after 60 days or 50 starts from the first appearance (if ignored or disliked)
-			case IGNORED:
-			case DISLIKED_WITH_MESSAGE:
-			case DISLIKED_WITHOUT_MESSAGE:
-				int startsOnDislikeMoment = settings.NUMBER_OF_APP_STARTS_ON_DISLIKE_MOMENT.get();
-				long lastDisplayTimeInMillis = settings.LAST_DISPLAY_TIME.get();
-				long currentTime = System.currentTimeMillis();
-				return currentTime - lastDisplayTimeInMillis > SIXTY_DAYS || numberOfStarts - startsOnDislikeMoment > 50;
-		}
 		return false;
 	}
 

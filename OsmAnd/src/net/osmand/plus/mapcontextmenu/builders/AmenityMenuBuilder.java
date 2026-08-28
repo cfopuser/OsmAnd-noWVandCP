@@ -98,89 +98,21 @@ public class AmenityMenuBuilder extends MenuBuilder {
 	@Override
 	protected void buildDescription(View view) {
 		Map<String, Object> filteredInfo = infoBundle.getFilteredLocalizedInfo();
-		if (!buildShortWikiDescription(view, filteredInfo, true)) {
-			Pair<String, Locale> pair = AmenityUIHelper.getDescriptionWithPreferredLang(app, amenity, DESCRIPTION, filteredInfo);
-			if (pair != null) {
-				buildDescriptionRow(view, pair.first);
-				infoBundle.setCustomHiddenExtensions(Collections.singletonList(DESCRIPTION));
-			}
-		}
-		if (isCustomOnlinePhotosPosition()) {
-			buildPhotosRow((ViewGroup) view, amenity);
+		Pair<String, Locale> pair = AmenityUIHelper.getDescriptionWithPreferredLang(app, amenity, DESCRIPTION, filteredInfo);
+		if (pair != null) {
+			buildDescriptionRow(view, pair.first);
+			infoBundle.setCustomHiddenExtensions(Collections.singletonList(DESCRIPTION));
 		}
 	}
 
 	protected boolean buildShortWikiDescription(@NonNull View view,
 			@NonNull Map<String, Object> filteredInfo, boolean allowOnlineWiki) {
-		Pair<String, Locale> pair = AmenityUIHelper.getDescriptionWithPreferredLang(app, amenity, SHORT_DESCRIPTION, filteredInfo);
-		Locale locale = pair != null ? pair.second : null;
-		String description = pair != null ? pair.first : null;
-
-		boolean hasShortDescription = !Algorithms.isEmpty(description);
-		if (hasShortDescription) {
-			infoBundle.setCustomHiddenExtensions(Collections.singletonList(DESCRIPTION));
-		}
-		if (!hasShortDescription && allowOnlineWiki) {
-			description = createWikipediaArticleList(filteredInfo);
-		}
-		boolean[] descriptionCollapsed = {true};
-		if (!Algorithms.isEmpty(description)) {
-			View rowView = buildRow(view, new BuildRowAttrs.Builder().setText(description).setCollapsable(true).build());
-			TextViewEx textView = rowView.findViewById(R.id.text);
-			final String descriptionToSet = description;
-			textView.setOnClickListener(v -> {
-				boolean collapsed = !descriptionCollapsed[0];
-				descriptionCollapsed[0] = collapsed;
-				updateDescriptionState(textView, descriptionToSet, collapsed);
-			});
-			updateDescriptionState(textView, descriptionToSet, descriptionCollapsed[0]);
-			buildReadFullWikiButton((LinearLayout) view, locale, hasShortDescription);
-		}
-		return hasShortDescription;
+		return false;
 	}
 
 	protected void buildReadFullWikiButton(@NonNull ViewGroup container, @Nullable Locale locale,
 			boolean hasShortDescription) {
-		boolean light = isLightContent();
-		Context ctx = container.getContext();
-		int activeColor = ColorUtilities.getActiveColor(ctx, !light);
-
-		DialogButton button = (DialogButton) themedInflater.inflate(R.layout.context_menu_read_wiki_button, container, false);
-		if (hasShortDescription) {
-			String text = app.getString(R.string.context_menu_read_full_article);
-			button.setTitle(UiUtilities.createColorSpannable(text, activeColor, text));
-		} else {
-			String wikipedia = app.getString(R.string.shared_string_wikipedia);
-			String text = app.getString(R.string.read_on, wikipedia);
-			button.setTitle(UiUtilities.createColorSpannable(text, activeColor, wikipedia));
-		}
-
-		Resources resources = ctx.getResources();
-		int size = resources.getDimensionPixelSize(R.dimen.small_icon_size);
-		Drawable drawable = app.getUIUtilities().getIcon(R.drawable.ic_plugin_wikipedia, light);
-		drawable = new BitmapDrawable(resources, AndroidUtils.drawableToBitmap(drawable, size, size, true));
-
-		TextViewEx textView = button.findViewById(R.id.button_text);
-		textView.setTypeface(FontCache.getNormalFont());
-		textView.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
-
-		button.setOnClickListener((v) -> {
-			if (hasShortDescription) {
-				WikipediaDialogFragment.showInstance(mapActivity, amenity, null);
-			} else {
-				String wikipediaUrl = amenity.getAdditionalInfo(WIKIPEDIA);
-				if (wikipediaUrl == null && locale != null) {
-					String title = amenity.getName(locale.getLanguage());
-					wikipediaUrl = "https://" + locale.getLanguage() + WIKIPEDIA_ORG_WIKI_URL_PART + title.replace(' ', '_');
-				}
-				if (mapActivity != null && !Algorithms.isEmpty(wikipediaUrl)) {
-					LatLon location = amenity != null ? amenity.getLocation() : getLatLon();
-					boolean nightMode = app.getDaynightHelper().isNightMode(app.getSettings().getApplicationMode(), ThemeUsageContext.MAP);
-					WikiArticleHelper.askShowArticle(mapActivity, nightMode, location, wikipediaUrl);
-				}
-			}
-		});
-		container.addView(button);
+		// Wikipedia buttons disabled in kosher edition
 	}
 
 	@Nullable

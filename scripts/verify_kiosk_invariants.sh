@@ -50,3 +50,72 @@ fi
 echo "✓ Zero CertificatePinner calls in source tree verified."
 
 echo "=== All Kiosk & Security Invariants Passed Successfully! ==="
+
+echo "=== Running Kosher & Clean UI Invariants Verification ==="
+
+# 6. Check WikipediaPlugin and MapillaryPlugin are removed from PluginsHelper
+PLUGINS_HELPER="OsmAnd/src/net/osmand/plus/plugins/PluginsHelper.java"
+if grep -q 'allPlugins.add(new WikipediaPlugin' "$PLUGINS_HELPER"; then
+    echo "ERROR: WikipediaPlugin must not be registered in $PLUGINS_HELPER!"
+    exit 1
+fi
+if grep -q 'allPlugins.add(new MapillaryPlugin' "$PLUGINS_HELPER"; then
+    echo "ERROR: MapillaryPlugin must not be registered in $PLUGINS_HELPER!"
+    exit 1
+fi
+echo "✓ PluginsHelper verified (Wikipedia and Mapillary plugins removed)."
+
+# 7. Check MapActivityActions has no sale, live updates, travel guides, or cloud items in drawer
+MAP_ACTIONS="OsmAnd/src/net/osmand/plus/activities/MapActivityActions.java"
+if grep -q 'DRAWER_TRAVEL_GUIDES_ID' "$MAP_ACTIONS"; then
+    echo "ERROR: DRAWER_TRAVEL_GUIDES_ID found in $MAP_ACTIONS!"
+    exit 1
+fi
+if grep -q 'DRAWER_LIVE_UPDATES_ID' "$MAP_ACTIONS"; then
+    echo "ERROR: DRAWER_LIVE_UPDATES_ID found in $MAP_ACTIONS!"
+    exit 1
+fi
+if grep -q 'DRAWER_BACKUP_RESTORE_ID' "$MAP_ACTIONS"; then
+    echo "ERROR: DRAWER_BACKUP_RESTORE_ID found in $MAP_ACTIONS!"
+    exit 1
+fi
+echo "✓ MapActivityActions verified (Drawer cleaned of Travel Guides, Live updates, Cloud, and Sales)."
+
+# 8. Check Settings XML has no cloud or purchases preferences
+SETTINGS_XML="OsmAnd/res/xml/settings_main_screen.xml"
+if grep -q 'backup_and_restore' "$SETTINGS_XML"; then
+    echo "ERROR: backup_and_restore found in $SETTINGS_XML!"
+    exit 1
+fi
+if grep -q 'purchases_settings' "$SETTINGS_XML"; then
+    echo "ERROR: purchases_settings found in $SETTINGS_XML!"
+    exit 1
+fi
+echo "✓ settings_main_screen.xml verified (Cloud and Purchases removed)."
+
+# 9. Check promo cards and upsell banners are disabled
+FAV_CARD="OsmAnd/src/net/osmand/plus/myplaces/favorites/dialogs/FavoritesFreeBackupCard.java"
+TRACK_CARD="OsmAnd/src/net/osmand/plus/myplaces/tracks/dialogs/TracksFreeBackupCard.java"
+DOWNLOAD_ACT="OsmAnd/src/net/osmand/plus/download/DownloadActivity.java"
+DISCOUNT_HELPER="OsmAnd/src/net/osmand/plus/helpers/DiscountHelper.java"
+RATE_US="OsmAnd/src/net/osmand/plus/feedback/RateUsHelper.java"
+
+if ! grep -q 'return false;' "$FAV_CARD"; then
+    echo "ERROR: FavoritesFreeBackupCard shouldShow must return false!"
+    exit 1
+fi
+if ! grep -q 'return false;' "$TRACK_CARD"; then
+    echo "ERROR: TracksFreeBackupCard shouldShow must return false!"
+    exit 1
+fi
+if ! grep -q 'return false;' "$DOWNLOAD_ACT"; then
+    echo "ERROR: DownloadActivity shouldShowFreeVersionBanner must return false!"
+    exit 1
+fi
+if ! grep -q 'return false;' "$RATE_US"; then
+    echo "ERROR: RateUsHelper shouldShowRateDialog must return false!"
+    exit 1
+fi
+echo "✓ Promo cards, rate dialogs, discount polling, and download banners verified disabled."
+
+echo "=== All Kiosk, Kosher & Clean UI Invariants Passed Successfully! ==="

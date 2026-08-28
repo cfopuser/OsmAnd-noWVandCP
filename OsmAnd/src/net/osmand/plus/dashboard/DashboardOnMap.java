@@ -338,8 +338,10 @@ public class DashboardOnMap implements ObservableScrollViewCallbacks, IRouteInfo
 		} else if (isCurrentType(BUILDINGS_3D)) {
 			tv.setText(R.string.enable_3d_objects);
 		} else if (isCurrentType(WIKIPEDIA)) {
-			WikipediaPlugin plugin = PluginsHelper.requirePlugin(WikipediaPlugin.class);
-			tv.setText(plugin.getPopularPlacesTitle());
+			WikipediaPlugin plugin = PluginsHelper.getPlugin(WikipediaPlugin.class);
+			if (plugin != null) {
+				tv.setText(plugin.getPopularPlacesTitle());
+			}
 		} else if (isCurrentType(TRAVEL_ROUTES)) {
 			tv.setText(R.string.travel_routes);
 		} else if (isCurrentType(TRANSPORT_LINES)) {
@@ -719,7 +721,10 @@ public class DashboardOnMap implements ObservableScrollViewCallbacks, IRouteInfo
 		} else if (isCurrentType(OSM_NOTES)) {
 			cm = OsmNotesMenu.createListAdapter(mapActivity);
 		} else if (isCurrentType(WIKIPEDIA)) {
-			cm = WikipediaPoiMenu.createListAdapter(mapActivity);
+			WikipediaPlugin plugin = PluginsHelper.getPlugin(WikipediaPlugin.class);
+			if (plugin != null) {
+				cm = WikipediaPoiMenu.createListAdapter(mapActivity);
+			}
 		}
 		if (cm != null) {
 			updateListAdapter(cm);
@@ -753,14 +758,14 @@ public class DashboardOnMap implements ObservableScrollViewCallbacks, IRouteInfo
 	}
 
 	public void onNewDownloadIndexes() {
-		if (isCurrentType(CONTOUR_LINES, WIKIPEDIA)) {
+		if (isCurrentType(CONTOUR_LINES)) {
 			refreshContent(true);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	public void onDownloadInProgress() {
-		if (isCurrentType(CONTOUR_LINES, WIKIPEDIA)) {
+		if (isCurrentType(CONTOUR_LINES)) {
 			DownloadIndexesThread downloadThread = getMyApplication().getDownloadThread();
 			IndexItem downloadIndexItem = downloadThread.getCurrentDownloadingItem();
 			if (downloadIndexItem != null && listAdapter != null) {
@@ -778,11 +783,9 @@ public class DashboardOnMap implements ObservableScrollViewCallbacks, IRouteInfo
 	}
 
 	public void onDownloadHasFinished() {
-		if (isCurrentType(CONTOUR_LINES, WIKIPEDIA)) {
+		if (isCurrentType(CONTOUR_LINES)) {
 			refreshContent(true);
-			if (isCurrentType(CONTOUR_LINES)) {
-				mapActivity.refreshMapComplete();
-			}
+			mapActivity.refreshMapComplete();
 		}
 	}
 

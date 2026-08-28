@@ -57,7 +57,7 @@ public class NearbyPlacesCard extends FrameLayout implements DownloadItemsAdapte
 	private static final Log log = PlatformUtil.getLog(NearbyPlacesCard.class);
 
 	private final OsmandApplication app;
-	private final WikipediaPlugin plugin = PluginsHelper.requirePlugin(WikipediaPlugin.class);
+	private final WikipediaPlugin plugin;
 	private PoiUIFilter wikiFilter;
 
 	private SearchResultCollection collection;
@@ -87,6 +87,7 @@ public class NearbyPlacesCard extends FrameLayout implements DownloadItemsAdapte
 			@NonNull NearbyItemClickListener listener, boolean nightMode, boolean loadItemsOnInit) {
 		super(activity);
 		app = (OsmandApplication) activity.getApplicationContext();
+		plugin = PluginsHelper.getPlugin(WikipediaPlugin.class);
 		this.clickListener = listener;
 		this.nightMode = nightMode;
 		init(loadItemsOnInit);
@@ -258,7 +259,7 @@ public class NearbyPlacesCard extends FrameLayout implements DownloadItemsAdapte
 
 	@Nullable
 	private PoiUIFilter getWikiFilter() {
-		if (wikiFilter == null) {
+		if (wikiFilter == null && plugin != null) {
 			wikiFilter = plugin.getTopWikiPoiFilter();
 		}
 		return wikiFilter;

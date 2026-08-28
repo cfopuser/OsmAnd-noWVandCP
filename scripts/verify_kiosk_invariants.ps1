@@ -49,3 +49,74 @@ if ($pinnerFiles) {
 Write-Host "Verified: Zero CertificatePinner calls detected in sources."
 
 Write-Host "=== All Kiosk and Security Invariants Passed Successfully! ==="
+
+Write-Host "=== Running Kosher and Clean UI Invariants Verification ==="
+
+# 6. Check PluginsHelper
+$pluginsHelper = "OsmAnd\src\net\osmand\plus\plugins\PluginsHelper.java"
+$pluginsContent = Get-Content $pluginsHelper -Raw
+if ($pluginsContent -match 'allPlugins\.add\(new WikipediaPlugin') {
+    Write-Error "ERROR: WikipediaPlugin must not be registered in $pluginsHelper!"
+    exit 1
+}
+if ($pluginsContent -match 'allPlugins\.add\(new MapillaryPlugin') {
+    Write-Error "ERROR: MapillaryPlugin must not be registered in $pluginsHelper!"
+    exit 1
+}
+Write-Host "Verified PluginsHelper: Wikipedia and Mapillary plugins removed."
+
+# 7. Check MapActivityActions
+$mapActions = "OsmAnd\src\net\osmand\plus\activities\MapActivityActions.java"
+$mapActionsContent = Get-Content $mapActions -Raw
+if ($mapActionsContent -match 'DRAWER_TRAVEL_GUIDES_ID') {
+    Write-Error "ERROR: DRAWER_TRAVEL_GUIDES_ID found in $mapActions!"
+    exit 1
+}
+if ($mapActionsContent -match 'DRAWER_LIVE_UPDATES_ID') {
+    Write-Error "ERROR: DRAWER_LIVE_UPDATES_ID found in $mapActions!"
+    exit 1
+}
+if ($mapActionsContent -match 'DRAWER_BACKUP_RESTORE_ID') {
+    Write-Error "ERROR: DRAWER_BACKUP_RESTORE_ID found in $mapActions!"
+    exit 1
+}
+Write-Host "Verified MapActivityActions: Drawer cleaned of Travel Guides, Live updates, Cloud, and Sales."
+
+# 8. Check settings_main_screen.xml
+$settingsXml = "OsmAnd\res\xml\settings_main_screen.xml"
+$settingsContent = Get-Content $settingsXml -Raw
+if ($settingsContent -match 'backup_and_restore') {
+    Write-Error "ERROR: backup_and_restore found in $settingsXml!"
+    exit 1
+}
+if ($settingsContent -match 'purchases_settings') {
+    Write-Error "ERROR: purchases_settings found in $settingsXml!"
+    exit 1
+}
+Write-Host "Verified settings_main_screen.xml: Cloud and Purchases removed."
+
+# 9. Check promo cards and upsell banners disabled
+$favCard = Get-Content "OsmAnd\src\net\osmand\plus\myplaces\favorites\dialogs\FavoritesFreeBackupCard.java" -Raw
+$trackCard = Get-Content "OsmAnd\src\net\osmand\plus\myplaces\tracks\dialogs\TracksFreeBackupCard.java" -Raw
+$downloadAct = Get-Content "OsmAnd\src\net\osmand\plus\download\DownloadActivity.java" -Raw
+$rateUs = Get-Content "OsmAnd\src\net\osmand\plus\feedback\RateUsHelper.java" -Raw
+
+if ($favCard -notmatch 'return false;') {
+    Write-Error "ERROR: FavoritesFreeBackupCard shouldShow must return false!"
+    exit 1
+}
+if ($trackCard -notmatch 'return false;') {
+    Write-Error "ERROR: TracksFreeBackupCard shouldShow must return false!"
+    exit 1
+}
+if ($downloadAct -notmatch 'return false;') {
+    Write-Error "ERROR: DownloadActivity shouldShowFreeVersionBanner must return false!"
+    exit 1
+}
+if ($rateUs -notmatch 'return false;') {
+    Write-Error "ERROR: RateUsHelper shouldShowRateDialog must return false!"
+    exit 1
+}
+Write-Host "Verified: Promo cards, rate dialogs, and download banners disabled."
+
+Write-Host "=== All Kiosk, Kosher & Clean UI Invariants Passed Successfully! ==="

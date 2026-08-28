@@ -44,7 +44,7 @@ public class WikipediaPoiMenu {
 
 	private static final Log log = PlatformUtil.getLog(WikipediaPoiMenu.class);
 
-	private final WikipediaPlugin plugin = PluginsHelper.requirePlugin(WikipediaPlugin.class);
+	private final WikipediaPlugin plugin = PluginsHelper.getPlugin(WikipediaPlugin.class);
 
 	private final OsmandApplication app;
 	private final OsmandSettings settings;
@@ -60,7 +60,7 @@ public class WikipediaPoiMenu {
 
 	@NonNull
 	private ContextMenuAdapter createLayersItems() {
-		String toggleAction = plugin.getPopularPlacesTitle();
+		String toggleAction = plugin != null ? plugin.getPopularPlacesTitle() : "";
 		int languageActionStringId = R.string.shared_string_language;
 		int spaceHeight = app.getResources().getDimensionPixelSize(R.dimen.bottom_sheet_big_item_height);
 		boolean enabled = app.getPoiFilters().isPoiFilterSelected(PoiUIFilter.TOP_WIKI_FILTER_ID);
@@ -73,7 +73,9 @@ public class WikipediaPoiMenu {
 				String title = item.getTitle();
 				int itemId = item.getTitleId();
 				if (Algorithms.stringsEqual(toggleAction, title)) {
-					app.runInUIThread(() -> plugin.toggleWikipediaPoi(!enabled, null));
+					if (plugin != null) {
+						app.runInUIThread(() -> plugin.toggleWikipediaPoi(!enabled, null));
+					}
 				} else if (itemId == languageActionStringId) {
 					SelectWikiLanguagesBottomSheet.showInstance(activity, true);
 				} else if (itemId == R.string.poi_source) {
@@ -113,7 +115,7 @@ public class WikipediaPoiMenu {
 		adapter.addItem(new ContextMenuItem(null)
 				.setLayout(R.layout.list_item_divider));
 
-		summary = plugin.getLanguagesSummary();
+		summary = plugin != null ? plugin.getLanguagesSummary() : "";
 		adapter.addItem(new ContextMenuItem(null)
 				.setTitleId(languageActionStringId, activity)
 				.setIcon(R.drawable.ic_action_map_language)

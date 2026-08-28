@@ -144,13 +144,15 @@ public class ExplorePlacesOnlineProvider implements ExplorePlacesProvider {
 	private List<String> getPreferredLangs() {
 		String preferredLang = app.getSettings().MAP_PREFERRED_LOCALE.get();
 		Set<String> languages = new LinkedHashSet<>();
-		WikipediaPlugin plugin = PluginsHelper.requirePlugin(WikipediaPlugin.class);
-		if (plugin.hasCustomSettings()) {
+		WikipediaPlugin plugin = PluginsHelper.getPlugin(WikipediaPlugin.class);
+		if (plugin != null && plugin.hasCustomSettings()) {
 			List<String> langs = plugin.getLanguagesToShow();
 			if (langs.contains(preferredLang)) {
 				languages.add(preferredLang);
 			}
 			languages.addAll(langs);
+		} else if (!Algorithms.isEmpty(preferredLang)) {
+			languages.add(preferredLang);
 		}
 		return new ArrayList<>(languages);
 	}

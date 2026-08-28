@@ -411,7 +411,6 @@ public class MapActivityActions extends MapActions {
 	private ContextMenuAdapter createNormalOptionsMenu(@NonNull MapActivity activity,
 			@NonNull ContextMenuAdapter adapter, boolean nightMode) {
 		createProfilesController(activity, adapter, nightMode, false);
-		addSaleToDrawer(activity, adapter, nightMode);
 
 		adapter.addItem(new ContextMenuItem(DRAWER_DASHBOARD_ID)
 				.setTitleId(R.string.home, activity)
@@ -458,19 +457,6 @@ public class MapActivityActions extends MapActions {
 			addMyPlacesTabToDrawer(activity, adapter, R.string.osm_edits,
 					R.drawable.ic_action_folder_osm_notes, DRAWER_OSM_EDITS_ID);
 		}
-
-		adapter.addItem(new ContextMenuItem(DRAWER_BACKUP_RESTORE_ID)
-				.setTitleId(R.string.backup_and_restore, activity)
-				.setIcon(R.drawable.ic_action_cloud_upload)
-				.setListener((uiAdapter, view, item, isChecked) -> {
-					app.logEvent("drawer_backup_restore_open");
-					if (app.getBackupHelper().isRegistered()) {
-						BackupCloudFragment.showInstance(activity.getSupportFragmentManager());
-					} else {
-						BackupAuthorizationFragment.showInstance(activity.getSupportFragmentManager());
-					}
-					return true;
-				}));
 
 		adapter.addItem(new ContextMenuItem(DRAWER_SEARCH_ID)
 				.setTitleId(R.string.search_button, activity)
@@ -528,32 +514,6 @@ public class MapActivityActions extends MapActions {
 					Intent newIntent = new Intent(activity, app.getAppCustomization().getDownloadActivity());
 					newIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 					activity.startActivity(newIntent);
-					return true;
-				}));
-
-		adapter.addItem(new ContextMenuItem(DRAWER_LIVE_UPDATES_ID)
-				.setTitleId(R.string.live_updates, activity)
-				.setIcon(R.drawable.ic_action_map_update)
-				.setListener((uiAdapter, view, item, isChecked) -> {
-					LiveUpdatesFragment.showInstance(activity.getSupportFragmentManager(), null);
-					return true;
-				}));
-
-		adapter.addItem(new ContextMenuItem(DRAWER_TRAVEL_GUIDES_ID)
-				.setTitle(app.getString(R.string.ltr_or_rtl_combine_with_brackets,
-						getString(R.string.shared_string_travel_guides), getString(R.string.shared_string_beta)))
-				.setIcon(R.drawable.ic_action_travel)
-				.setListener((uiAdapter, view, item, isChecked) -> {
-					MapActivity.clearPrevActivityIntent();
-					TravelHelper travelHelper = app.getTravelHelper();
-					travelHelper.initializeDataOnAppStartup();
-					if (!travelHelper.isAnyTravelBookPresent() && !travelHelper.getBookmarksHelper().hasSavedArticles()) {
-						WikivoyageWelcomeDialogFragment.showInstance(activity.getSupportFragmentManager());
-					} else {
-						Intent intent = new Intent(activity, WikivoyageExploreActivity.class);
-						intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-						activity.startActivity(intent);
-					}
 					return true;
 				}));
 
@@ -695,21 +655,7 @@ public class MapActivityActions extends MapActions {
 	}
 
 	private void addSaleToDrawer(@NonNull MapActivity activity, @NonNull ContextMenuAdapter adapter, boolean nightMode) {
-		if (!DiscountHelper.shouldShowCurrentSaleInDrawer(app)) {
-			return;
-		}
-		adapter.addItem(new ContextMenuItem(DRAWER_SALE_ID)
-				.setLayout(R.layout.drawer_sale_list_item)
-				.setTitle(DiscountHelper.getCurrentSaleTitle())
-				.setSecondaryDescription(DiscountHelper.getCurrentSaleDiscount(app, nightMode, true))
-				.setIcon(DiscountHelper.getCurrentSaleDrawerIconId(nightMode))
-				.setUseNaturalIconColor(true)
-				.setListener((uiAdapter, view, item, isChecked) -> {
-					app.logEvent("drawer_sale_open");
-					activity.closeDrawer();
-					DiscountHelper.openCurrentSale(activity);
-					return true;
-				}));
+		// Sales & promotional banners disabled in kiosk / kosher edition
 	}
 
 	@NonNull

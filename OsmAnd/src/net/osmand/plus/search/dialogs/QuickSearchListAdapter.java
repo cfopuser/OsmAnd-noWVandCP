@@ -248,7 +248,9 @@ public class QuickSearchListAdapter extends ArrayAdapter<QuickSearchListItem> {
 		if (type == QuickSearchListItemType.BANNER) {
 			view = bindBannerItem(convertView, listItem);
 		} else if (type == QuickSearchListItemType.FREE_VERSION_BANNER) {
-			view = bindFreeVersionBannerItem(convertView);
+			View emptyView = new View(activity);
+			emptyView.setVisibility(View.GONE);
+			return emptyView;
 		} else if (type == SEARCH_MORE) {
 			view = bindSearchMoreItem(convertView, listItem);
 		} else if (type == SEARCH_ON_WEB) {
@@ -273,9 +275,6 @@ public class QuickSearchListAdapter extends ArrayAdapter<QuickSearchListItem> {
 				searchResult.object instanceof Amenity amenity && amenity.getType().isAdministrative())
 		) {
 			view = bindAdministrativeItem(convertView, listItem);
-		} else if (type == QuickSearchListItemType.SEARCH_RESULT &&
-				(poiUIFilter != null && poiUIFilter.isWikiFilter())) {
-			return bindWikiItem(convertView, listItem);
 		} else if (type == QuickSearchListItemType.DISABLED_HISTORY) {
 			view = bindDisabledHistoryItem(listItem, convertView);
 		} else {

@@ -70,9 +70,6 @@ public class MainSettingsFragment extends BaseSettingsFragment implements OnSele
 		availableAppModes = new LinkedHashSet<>(ApplicationMode.values(app));
 		Preference globalSettings = requirePreference("global_settings");
 		globalSettings.setIcon(getContentIcon(R.drawable.ic_action_settings));
-		setupBackupAndRestorePref();
-		Preference purchasesSettings = requirePreference(PURCHASES_SETTINGS);
-		purchasesSettings.setIcon(getContentIcon(R.drawable.ic_action_purchases));
 		PreferenceCategory selectedProfile = requirePreference(SELECTED_PROFILE);
 		selectedProfile.setIconSpaceReserved(false);
 		setupConfigureProfilePref();
@@ -128,21 +125,6 @@ public class MainSettingsFragment extends BaseSettingsFragment implements OnSele
 		} else if (CREATE_PROFILE.equals(prefId)) {
 			callActivity(activity -> SelectBaseProfileBottomSheet.showInstance(activity,
 					this, getSelectedAppMode(), null, false));
-		} else if (PURCHASES_SETTINGS.equals(prefId)) {
-			MapActivity mapActivity = getMapActivity();
-			if (mapActivity != null) {
-				FragmentManager fragmentManager = mapActivity.getSupportFragmentManager();
-				PurchasesFragment.showInstance(fragmentManager);
-			}
-		} else if (BACKUP_AND_RESTORE.equals(prefId)) {
-			MapActivity mapActivity = getMapActivity();
-			if (mapActivity != null) {
-				if (app.getBackupHelper().isRegistered()) {
-					BackupCloudFragment.showInstance(mapActivity.getSupportFragmentManager());
-				} else {
-					BackupAuthorizationFragment.showInstance(mapActivity.getSupportFragmentManager());
-				}
-			}
 		} else if (EXPORT_TO_FILE.equals(prefId)) {
 			MapActivity mapActivity = getMapActivity();
 			if (mapActivity != null) {
@@ -188,18 +170,7 @@ public class MainSettingsFragment extends BaseSettingsFragment implements OnSele
 		configureProfile.setSummary(profileType);
 	}
 
-	private void setupBackupAndRestorePref() {
-		Preference backupSettings = findPreference(BACKUP_AND_RESTORE);
-		backupSettings.setIcon(getContentIcon(R.drawable.ic_action_cloud_upload));
 
-		if (app.getBackupHelper().isRegistered()) {
-			String time = getLastBackupTimeDescription(app, "");
-			if (!Algorithms.isEmpty(time)) {
-				String summary = getString(R.string.last_sync);
-				backupSettings.setSummary(getString(R.string.ltr_or_rtl_combine_via_colon, summary, time));
-			}
-		}
-	}
 
 	private void profileManagementPref() {
 		int activeColorPrimaryResId = ColorUtilities.getActiveColorId(isNightMode());

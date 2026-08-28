@@ -60,7 +60,7 @@ class ExplorePlacesFragment : BaseFullScreenFragment(), ExplorePlacesAdapter.Exp
 
 	private val log: Log = PlatformUtil.getLog(ExplorePlacesFragment::class.java)
 
-	private val plugin = PluginsHelper.requirePlugin(WikipediaPlugin::class.java)
+	private val plugin = PluginsHelper.getPlugin(WikipediaPlugin::class.java)
 
 	private val singleThreadExecutor = Executors.newSingleThreadExecutor()
 	private var convertAmenitiesTask: ConvertAmenitiesTask? = null

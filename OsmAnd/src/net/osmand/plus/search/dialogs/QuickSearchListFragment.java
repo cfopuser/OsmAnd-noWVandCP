@@ -233,18 +233,7 @@ public abstract class QuickSearchListFragment extends BaseNestedListFragment {
 	}
 
 	private boolean showTravelArticle(@NonNull Amenity amenity) {
-		FragmentActivity activity = getActivity();
-		String routeId = amenity.isRouteArticle() ? amenity.getRouteId() : null;
-		if (!Algorithms.isEmpty(routeId) && activity != null) {
-			dialogFragment.hideToolbar();
-			dialogFragment.hide();
-
-			List<String> locales = new ArrayList<>(amenity.getSupportedContentLocales());
-			LatLon location = amenity.getLocation();
-			TravelArticleIdentifier identifier = new TravelArticleIdentifier(null,
-					location.getLatitude(), location.getLongitude(), null, routeId, null);
-			return WikivoyageArticleDialogFragment.showInstance(activity.getSupportFragmentManager(), identifier, locales);
-		}
+		// Travel / Wikivoyage articles disabled in kosher edition
 		return false;
 	}
 

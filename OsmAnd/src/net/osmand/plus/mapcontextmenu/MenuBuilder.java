@@ -328,12 +328,7 @@ public class MenuBuilder {
 	}
 
 	public void buildPhotosRow(@NonNull ViewGroup view, @Nullable Object object) {
-		if (customization.isFeatureEnabled(CONTEXT_MENU_ONLINE_PHOTOS_ID) && showOnlinePhotos) {
-			Map<String, String> imageParams = new LinkedHashMap<>(getAdditionalImageParams());
-			GalleryKey.Location galleryKey = new GalleryKey.Location(latLon, imageParams);
-			buildOnlinePhotosRow(view, galleryKey);
-			buildPluginGalleryRows(view, galleryKey);
-		}
+		// Online photos streaming disabled in kosher edition
 	}
 
 	private boolean showTransportRoutes() {

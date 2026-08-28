@@ -366,7 +366,7 @@ public class DownloadActivity extends AbstractDownloadActivity implements Downlo
 	}
 
 	public static boolean shouldShowFreeVersionBanner(OsmandApplication application) {
-		return !Version.isPaidVersion(application) || application.getSettings().SHOULD_SHOW_FREE_VERSION_BANNER.get();
+		return false;
 	}
 
 	public void reloadLocalIndexes() {

@@ -117,9 +117,6 @@ public class TracksFreeBackupCard extends BaseCard {
 	}
 
 	public static boolean shouldShow(@NonNull OsmandApplication app, @NonNull TrackFolder rootFolder) {
-		boolean hasTracks = !Algorithms.isEmpty(rootFolder.getFlattenedTrackItems());
-		boolean backupAvailable = InAppPurchaseUtils.isBackupAvailable(app);
-		boolean dismissed = app.getSettings().TRACKS_FREE_ACCOUNT_CARD_DISMISSED.get();
-		return hasTracks && !backupAvailable && !dismissed;
+		return false;
 	}
 }

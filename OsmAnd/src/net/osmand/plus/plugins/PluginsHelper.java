@@ -107,7 +107,6 @@ public class PluginsHelper {
 		Set<String> enabledPlugins = app.getSettings().getEnabledPlugins();
 		allPlugins.clear();
 
-		allPlugins.add(new WikipediaPlugin(app));
 		allPlugins.add(new OsmandRasterMapsPlugin(app));
 		allPlugins.add(new OsmandMonitoringPlugin(app));
 		checkMarketPlugin(app, new SRTMPlugin(app));
@@ -118,7 +117,6 @@ public class PluginsHelper {
 		allPlugins.add(new AudioVideoNotesPlugin(app));
 		checkMarketPlugin(app, new ParkingPositionPlugin(app));
 		allPlugins.add(new OsmEditingPlugin(app));
-		allPlugins.add(new MapillaryPlugin(app));
 		allPlugins.add(new ExternalSensorsPlugin(app));
 		allPlugins.add(new VehicleMetricsPlugin(app));
 		allPlugins.add(new AstronomyPlugin(app));
